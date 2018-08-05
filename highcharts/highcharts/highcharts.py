@@ -13,7 +13,7 @@ import datetime
 import urllib.request, urllib.error, urllib.parse
 import html
 from collections import Iterable
-from .options import BaseOptions, ChartOptions, ColorAxisOptions, \
+from .options import BaseOptions, AnnotationOptions, ChartOptions, ColorAxisOptions, \
     ColorsOptions, CreditsOptions, DrilldownOptions, ExportingOptions, \
     GlobalOptions, LabelsOptions, LangOptions, \
     LegendOptions, LoadingOptions, NavigationOptions, PaneOptions, \
@@ -118,6 +118,7 @@ class Highchart(object):
 
         # Bind Base Classes to self
         self.options = {
+            "annotations": [], #AnnotationsOptions(),
             "chart": ChartOptions(),
             #"colorAxis" : ColorAxisOptions(),
             "colors": ColorsOptions(),
@@ -177,9 +178,11 @@ class Highchart(object):
         """add additional js script source(s)"""
         if isinstance(new_src, list):
             for h in new_src:
-                self.JSsource.append(h)
+                if h not in self.JSsource:
+                    self.JSsource.append(h)
         elif isinstance(new_src, basestring):
-            self.JSsource.append(new_src)
+            if new_src not in self.JSsource:
+                self.JSsource.append(new_src)
         else:
             raise OptionTypeError("Option: %s Not Allowed For Series Type: %s" % type(new_src))
 
@@ -208,6 +211,8 @@ class Highchart(object):
 
         if series_type == 'treemap':
             self.add_JSsource('http://code.highcharts.com/modules/treemap.js')
+        if series_type == 'streamgraph':
+            self.add_JSsource('http://code.highcharts.com/modules/streamgraph.js')
 
         series_data = Series(data, series_type=series_type, **kwargs)
        
@@ -287,12 +292,22 @@ class Highchart(object):
         elif option_type == 'colorAxis':
             self.options.update({'colorAxis': ColorAxisOptions()})
             self.options[option_type].update_dict(**option_dict)
+        elif option_type == 'annotations' and isinstance(option_dict, list):
+            self.options[option_type] = []
+            for annotation_dict in option_dict:
+                a = AnnotationOptions()
+                a.update_dict(**annotation_dict)
+                self.options[option_type].append(a)
+            self.add_JSsource("http://code.highcharts.com/modules/annotations.js")
         else:
             self.options[option_type].update_dict(**option_dict)
 
         if option_type == 'chart' and 'options3d' in option_dict:
             # Add 3d.js into Javascript source header
             self.add_JSsource("http://code.highcharts.com/highcharts-3d.js")
+        if option_type == 'plotOptions':
+            if 'series' in option_dict and 'label' in option_dict['series']:
+                self.add_JSsource("http://code.highcharts.com/modules/series-label.js")
 
 
     def set_dict_options(self, options):

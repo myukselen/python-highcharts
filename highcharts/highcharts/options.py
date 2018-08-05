@@ -109,6 +109,68 @@ class BaseOptions(object):
         else:
             return True
 
+class AnnotationLabelOptions(BaseOptions):
+    ALLOWED_OPTIONS = {
+        "backgroundColor": (ColorObject, basestring, dict),
+        "borderColor": (ColorObject, basestring, dict),
+    }
+
+
+class LabelPoint(CommonObject):
+    ALLOWED_OPTIONS = {
+    "x": int,
+    "xAxis": int,
+    "y": int,
+    "yAxis": int,
+    }
+
+
+class LabelItem(CommonObject):   
+    ALLOWED_OPTIONS = {
+    "align": basestring,
+    "backgroundColor": (ColorObject, basestring, dict),
+    "borderColor": (ColorObject, basestring, dict),
+    "borderRadius": [float, int],
+    "borderWidth": [int, basestring],
+    "color": (ColorObject, basestring, dict),
+    "connectorColor": (ColorObject, basestring, dict),
+    "connectorPadding": [float, int],
+    "connectorWidth": [float, int],
+    "crop": bool,
+    "defer": bool,
+    "distance": int,
+    "enabled": bool,
+    "format": basestring,
+    "formatter": (Formatter, JSfunction, basestring),
+    "inside": bool,
+    "overflow": basestring,
+    "padding": [float, int],
+    "point": (LabelPoint, dict),
+    "rotation": int, 
+    "shadow": [bool, dict], #shadow object
+    "shape": basestring,
+    "softConnector": bool,
+    "staggerLines": int,
+    "step": int,
+    "style": (CSSObject, dict),
+    "text": basestring,
+    "textAlign": basestring,
+    "useHTML": bool,
+    "verticalAlign": basestring,
+    "x": int,
+    "xAxis": int,
+    "y": int,
+    "yAxis": int,
+    "zIndex": int,
+    }
+
+
+class AnnotationOptions(BaseOptions):
+    ALLOWED_OPTIONS = {
+        "labels": list, #(LabelItem, list),
+        "labelOptions": (AnnotationLabelOptions, dict)
+    }
+
 
 class ChartOptions(BaseOptions):
     ALLOWED_OPTIONS = {
@@ -382,6 +444,7 @@ class PlotOptions(BaseOptions):
         "series": (SeriesOptions, dict),
         "spline": (SeriesOptions, dict),
         "treemap": (SeriesOptions, dict),
+        "streamgraph": (SeriesOptions, dict),
     }
 
 
@@ -466,6 +529,7 @@ class xAxisOptions(BaseOptions):
         "lineColor": (ColorObject, basestring, dict),
         "lineWidth": int,
         "linkedTo": int,
+        "margin": int,
         "max": [float, int],
         "maxPadding": [float, int],
         "maxZoom": NotImplemented,
@@ -569,7 +633,8 @@ class yAxisOptions(BaseOptions):
         "tickmarkPlacement": basestring,
         "title": (Title, dict),
         "type": basestring,
-        "units": list    
+        "units": list,
+        "visible": bool    
     }
 
 class zAxisOptions(BaseOptions): #only for 3D plots

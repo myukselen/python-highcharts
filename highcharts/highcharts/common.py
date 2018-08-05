@@ -474,6 +474,7 @@ class Labels(CommonObject):
     "inside": bool,
     "overflow": basestring,
     "padding": [float, int],
+    "reserveSpace": bool,
     "rotation": int, 
     "shadow": [bool, dict], #shadow object
     "shape": basestring,
